@@ -1,12 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import axios from "axios";
+import axios from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
-
+  // const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -14,10 +15,12 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData);
-      login(res.data.token);
+      const res = await axios.post(`/auth/register`, formData);
+      alert(res.data);
+      navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      console.log(err)
+      setError(err.response?.data?.code  || "Registration failed");
     }
   };
 

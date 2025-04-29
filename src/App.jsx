@@ -5,15 +5,18 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./contexts/ProtectedRoute";
+import { useContext } from "react";
+import { AuthContext } from "./contexts/AuthContext";
 
 const App = () => {
+  const {user} = useContext(AuthContext);
+  console.log(user)
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route exact path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       
-      {/* Protected Route */}
       <Route
         path="/dashboard"
         element={

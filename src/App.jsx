@@ -1,8 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import MeetingRoom from "./pages/MeetingRoom";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./contexts/ProtectedRoute";
 import { useContext } from "react";
@@ -13,6 +14,7 @@ const App = () => {
   console.log(user)
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route exact path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -25,6 +27,8 @@ const App = () => {
            </ProtectedRoute>
         }
       />
+      
+      <Route path="/meeting/:meetingLink" element={<MeetingRoom />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

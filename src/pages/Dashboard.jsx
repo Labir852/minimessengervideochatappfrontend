@@ -1,18 +1,21 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import CallPage from '../components/CallPage';
+import Sidebar from '../components/Sidebar';
+import ChatArea from '../components/ChatArea';
+import ActiveCall from '../components/ActiveCall';
+import CallModal from '../components/CallModal';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const token = localStorage.getItem("token")
-  console.log(user)
+
   return (
-    <div>
-      <h1>Welcome, {user?.email}</h1>
-      <CallPage token={token} />
-      <button onClick={logout}>Logout</button>
+    <div className="h-screen w-full flex bg-slate-900 text-slate-100 overflow-hidden font-sans">
+      <Sidebar />
+      <ChatArea />
+      <ActiveCall />
+      <CallModal />
     </div>
   )
 }
 
-export default Dashboard
+export default Dashboard;

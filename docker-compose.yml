@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SuperStrongPassword123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:
+    build:
+      context: ./minimessengervideochatapp
+      dockerfile: MiniMessenger/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=VideoChatDb;User Id=sa;Password=SuperStrongPassword123!;TrustServerCertificate=True;
+      - Jwt__Issuer=VideoChatApp
+      - Jwt__Audience=VideoChatAppUsers
+      - Jwt__Key=e6e2f1662142a86de6b3860eed76a8274760e89795281b698c9b494425dcde1d71c0d7c53b2808d39338ff9bbdef2710e7817c234098c3296ee54ac1f4731cb3afa0f6899d3f8a2bdc5f58e2269bf7a739e83f2e17261bec08750c4f4b039bedfa10baec7fee6a757f46379eb534fd4c7ac67d82a9c5c3ff7aa18956b7ce528301216c0734fa713bb204fbef8dfd2f68a95a3ff2207333c3cb773e994bb828ea982cfe416c33ca649f25cfcbd877be2a0993a1405ad6692e4192f2d9fe99a442ecefa69cf876eb811a96e2d789355f9063f5484463e1ec185d24d03995bc1ca29fe88050b7b13633f7636e3803ff03d49d386b8317fee5c061149fc4d3f61953
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./minimessengervideochatappfrontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  sql_data:

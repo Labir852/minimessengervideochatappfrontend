@@ -73,17 +73,30 @@ export const CallProvider = ({ children }) => {
       webrtcService.setLocalStream(stream);
       return stream;
     } catch (e) {
-      console.warn("Failed to get local stream with requested constraints, trying fallback", e);
+      console.warn("Failed to get local stream with requested constraints, trying fallbacks...", e);
+      
+      // Fallback 1: Try Video Only (if audio device is missing or blocked)
       if (video) {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
           setLocalStream(stream);
           webrtcService.setLocalStream(stream);
           return stream;
         } catch (err) {
-          console.error("Failed to get audio-only stream", err);
+          console.warn("Failed to get video-only stream, trying next fallback...", err);
         }
       }
+
+      // Fallback 2: Try Audio Only (if camera is missing or blocked)
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+        setLocalStream(stream);
+        webrtcService.setLocalStream(stream);
+        return stream;
+      } catch (err) {
+        console.error("All media capture fallbacks failed. No working camera or microphone found.", err);
+      }
+      
       return null;
     }
   };
